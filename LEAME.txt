@@ -1,0 +1,14 @@
+Para utilizar con eclipse: 
+
+mvn eclipse:eclipse
+
+Maven creara os ficheiros do proxecto e o classpath
+Despois, importar o proxecto desde o Eclipse.
+
+Para exportar o codigo entregable:
+
+mvn package -D maven.test.skip=true
+
+(crea no directorio "target" o ficheiro "TuteladoJPA-1.2-src.zip" que hai que entregar)
+
+

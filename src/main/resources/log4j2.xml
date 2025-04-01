@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <Console name="Console">
+      <!--  <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>  -->
+      <PatternLayout pattern="%highlight{[%-5level] %logger{36} - %msg%n}"/>
+    </Console>
+  </Appenders>
+
+  <Loggers>
+	<!--  Configuracion xeral -->
+    <Root level="fatal">
+      <AppenderRef ref="Console"/>
+    </Root>
+	<!--  O noso codigo -->
+	    <logger name="gei.id.tutelado" level="all"/>
+	<!--  Hibernate -->
+	    <logger name="org.hibernate" level="error"/>
+	    <logger name="org.hibernate.SQL" level="info"/>
+	    
+  </Loggers>
+
+</Configuration>
+
+<!-- 
+
+# (Extraido de http://es.wikipedia.org/wiki/Log4j )
+
+# Niveles de prioridad de los mensajes
+# Por defecto Log4J tiene 6 niveles de prioridad para los mensajes (trace, debug, info, warn, error, fatal). Además existen otros dos niveles extras (all y off):
+
+# Niveles de prioridad (De menor a mayor detalle):
+
+# OFF: este es el nivel de mínimo detalle, deshabilita todos los logs.
+# FATAL: se utiliza para mensajes críticos del sistema, generalmente después de guardar el mensaje el programa abortará.
+# ERROR: se utiliza en mensajes de error de la aplicación que se desea guardar, 
+#         estos eventos afectan al programa pero lo dejan seguir funcionando, 
+#         como por ejemplo que algún parámetro de configuración no es correcto y se carga el parámetro por defecto.
+# WARN: se utiliza para mensajes de alerta sobre eventos que se desea mantener constancia, pero que no afectan al correcto funcionamiento del programa.
+# INFO: se utiliza para mensajes similares al modo "verbose" en otras aplicaciones.
+# DEBUG: se utiliza para escribir mensajes de depuración. Este nivel no debe estar activado cuando la aplicación se encuentre en producción.
+# TRACE: se utiliza para mostrar mensajes con un mayor nivel de detalle que debug.
+# ALL: este es el nivel de máximo detalle, habilita todos los logs (en general equivale a TRACE).
+
+ -->
