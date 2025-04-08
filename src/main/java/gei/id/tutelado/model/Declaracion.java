@@ -8,6 +8,11 @@ import java.util.Set;
         pkColumnName="nome_id", pkColumnValue="idDeclaracion",
         valueColumnName="ultimo_valor_id",
         initialValue=0, allocationSize=1)
+
+@NamedQueries ({
+        @NamedQuery (name="Declaracion.recuperaPorNumeroReferencia",
+                query="SELECT d FROM Declaracion d where d.numeroReferencia=:numeroReferencia")
+})
 @Entity
 public class Declaracion {
     @Id

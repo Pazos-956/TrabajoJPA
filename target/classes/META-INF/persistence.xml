@@ -16,6 +16,9 @@
 	 		<!-- Entity classes --> 
 	        <class>gei.id.tutelado.model.Usuario</class>
 	        <class>gei.id.tutelado.model.EntradaLog</class>
+			<class>gei.id.tutelado.model.Contribuyente</class>
+			<class>gei.id.tutelado.model.Declaracion</class>
+			<class>gei.id.tutelado.model.Impuesto</class>
 	        <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
 	        <properties>

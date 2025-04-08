@@ -8,6 +8,11 @@ import java.util.Set;
         valueColumnName="ultimo_valor_id",
         initialValue=0, allocationSize=1)
 
+@NamedQueries ({
+        @NamedQuery (name="Contribuyente.recuperaPorNif",
+                query="SELECT c FROM Contribuyente c where c.nif=:nif")
+})
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo_contribuyente", discriminatorType = DiscriminatorType.STRING)
@@ -22,7 +27,7 @@ public abstract class Contribuyente {
     private String nombre;
     @Column(unique = false, nullable = false)
     private String direccion;
-    @OneToMany (mappedBy="contribuyente")
+    @OneToMany (mappedBy="contribuyente",fetch = FetchType.EAGER)
     private Set<Declaracion> declaraciones;
 
     public long getId() {

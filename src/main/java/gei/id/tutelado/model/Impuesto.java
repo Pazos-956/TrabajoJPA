@@ -7,6 +7,11 @@ import javax.persistence.*;
         valueColumnName="ultimo_valor_id",
         initialValue=0, allocationSize=1)
 
+@NamedQueries ({
+        @NamedQuery (name="Impuesto.recuperaPorCodigo",
+                query="SELECT i FROM Impuesto i where i.codigo=:codigo")
+})
+
 @Entity
 public class Impuesto {
     @Id
