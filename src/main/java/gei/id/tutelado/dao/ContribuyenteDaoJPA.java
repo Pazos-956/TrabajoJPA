@@ -1,6 +1,9 @@
 package gei.id.tutelado.dao;
 import gei.id.tutelado.configuracion.Configuracion;
 import gei.id.tutelado.model.Contribuyente;
+import gei.id.tutelado.model.Declaracion;
+import gei.id.tutelado.model.Usuario;
+import org.hibernate.LazyInitializationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -109,7 +112,92 @@ public class ContribuyenteDaoJPA implements ContribuyenteDao{
         }
         return (contribuyente);
     }
+    @Override
+    public Contribuyente restauraDeclaraciones(Contribuyente contribuyente) {
+        // Devolve o obxecto user coa coleccion de entradas cargada (se non o estaba xa)
 
+        try {
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+
+            try {
+                contribuyente.getDeclaraciones().size();
+            } catch (Exception ex2) {
+                if (ex2 instanceof LazyInitializationException)
+
+                {
+                    contribuyente = em.merge(contribuyente);
+                    contribuyente.getDeclaraciones().size();
+
+                } else {
+                    throw ex2;
+                }
+            }
+            em.getTransaction().commit();
+            em.close();
+        }
+        catch (Exception ex ) {
+            if (em!=null && em.isOpen()) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                em.close();
+                throw(ex);
+            }
+        }
+
+        return (contribuyente);
+
+    }
+
+    public List<Declaracion> recuperaDeclaracionesContribuyente(Contribuyente contribuyente) {
+        List<Declaracion> declaraciones=new ArrayList<>();
+
+        try {
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+
+            declaraciones = em.createQuery("SELECT d FROM Contribuyente c JOIN c.declaraciones d WHERE c = :c", Declaracion.class)
+                    .setParameter("c", contribuyente)
+                    .getResultList();
+
+            em.getTransaction().commit();
+            em.close();
+
+        }
+        catch (Exception ex ) {
+            if (em!=null && em.isOpen()) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                em.close();
+                throw(ex);
+            }
+        }
+
+        return (declaraciones);
+    }
+    public List<Contribuyente> contribuyentesPorEstadoCivil(String estadoCivil) {
+        List<Contribuyente> contribuyentes=new ArrayList<>();
+
+        try {
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+
+            contribuyentes = em.createQuery("SELECT c FROM Contribuyente c WHERE c.id IN (SELECT c2.id from PersonaFisica c2 WHERE c2.estadoCivil = :ec)", Contribuyente.class)
+                    .setParameter("ec", estadoCivil)
+                    .getResultList();
+
+            em.getTransaction().commit();
+            em.close();
+
+        }
+        catch (Exception ex ) {
+            if (em!=null && em.isOpen()) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                em.close();
+                throw(ex);
+            }
+        }
+
+        return (contribuyentes);
+    }
 
 
 }

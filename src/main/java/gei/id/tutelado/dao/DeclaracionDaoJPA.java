@@ -1,6 +1,7 @@
 package gei.id.tutelado.dao;
 
 import gei.id.tutelado.configuracion.Configuracion;
+import gei.id.tutelado.model.Contribuyente;
 import gei.id.tutelado.model.Declaracion;
 
 import javax.persistence.EntityManager;
@@ -109,5 +110,30 @@ public class DeclaracionDaoJPA implements DeclaracionDao {
             }
         }
         return (declaracion);
+    }
+
+    public List<Declaracion> recuperaDeclaracionesNulas() {
+        List<Declaracion> declaraciones=new ArrayList<>();
+
+        try {
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+
+            declaraciones = em.createQuery("SELECT d FROM Declaracion d LEFT JOIN d.impuesto imp WHERE imp IS NULL", Declaracion.class)
+                    .getResultList();
+
+            em.getTransaction().commit();
+            em.close();
+
+        }
+        catch (Exception ex ) {
+            if (em!=null && em.isOpen()) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                em.close();
+                throw(ex);
+            }
+        }
+
+        return (declaraciones);
     }
 }

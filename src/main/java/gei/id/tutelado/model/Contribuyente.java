@@ -27,7 +27,7 @@ public abstract class Contribuyente {
     private String nombre;
     @Column(unique = false, nullable = false)
     private String direccion;
-    @OneToMany (mappedBy="contribuyente",fetch = FetchType.EAGER)
+    @OneToMany (mappedBy="contribuyente",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Declaracion> declaraciones;
 
     public long getId() {
@@ -80,7 +80,7 @@ public abstract class Contribuyente {
         this.declaraciones.add(declaracion);
         declaracion.setContribuyente(this);
     }
-    public void removeDeclaracion(Declaracion declaracion) {
+    public void removeDeclaracion(Declaracion declaracion, Contribuyente contribuyente) {
         if (declaracion == null){
             throw new RuntimeException("Error intentando eliminar un contribuyente nulo");
         }
@@ -88,7 +88,7 @@ public abstract class Contribuyente {
             throw new RuntimeException("Error intentando eliminar una declaracion que no pertenece a este contribuyente");
         }
         this.declaraciones.remove(declaracion);
-        declaracion.setContribuyente(null);
+        declaracion.setContribuyente(contribuyente);
     }
 
 

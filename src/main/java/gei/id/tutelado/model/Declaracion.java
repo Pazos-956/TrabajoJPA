@@ -24,10 +24,10 @@ public class Declaracion {
     private LocalDate fechaPresentacion;
     @Column(unique = false, nullable = false)
     private float importe;
-    @ManyToOne(cascade={}, fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="contribuyente_declaracion", nullable=true, unique=false)
     private Contribuyente contribuyente;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="t_declaracion_impuesto",
             joinColumns=@JoinColumn(name="id_declaracion"),
             inverseJoinColumns=@JoinColumn(name="id_impuesto"))
