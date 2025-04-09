@@ -6,7 +6,10 @@ import gei.id.tutelado.dao.ContribuyenteDao;
 import gei.id.tutelado.dao.ContribuyenteDaoJPA;
 import gei.id.tutelado.dao.DeclaracionDao;
 import gei.id.tutelado.dao.DeclaracionDaoJPA;
-import gei.id.tutelado.model.*;
+import gei.id.tutelado.model.Contribuyente;
+import gei.id.tutelado.model.Declaracion;
+import gei.id.tutelado.model.PersonaFisica;
+import gei.id.tutelado.model.PersonaJuridica;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
@@ -15,14 +18,15 @@ import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-public class P01_Contribuyente {
+public class P04_PersonaJuridica {
     private Logger log = LogManager.getLogger("gei.id.tutelado");
 
     private static ProdutorDatosProba produtorDatos = new ProdutorDatosProba();
 
     private static Configuracion cfg;
-    private static ContribuyenteDao contribDao;
-    private static DeclaracionDao declaracionDao;
+    private static ContribuyenteDao pjDao;
+    private static DeclaracionDao declDao;
+
 
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -45,11 +49,11 @@ public class P01_Contribuyente {
         cfg = new ConfiguracionJPA();
         cfg.start();
 
-        contribDao = new ContribuyenteDaoJPA();
-        declaracionDao = new DeclaracionDaoJPA();
+        pjDao = new ContribuyenteDaoJPA();
+        pjDao.setup(cfg);
 
-        contribDao.setup(cfg);
-        declaracionDao.setup(cfg);
+        declDao = new DeclaracionDaoJPA();
+        declDao.setup(cfg);
 
         produtorDatos = new ProdutorDatosProba();
         produtorDatos.Setup(cfg);
@@ -74,8 +78,7 @@ public class P01_Contribuyente {
     @Test
     public void test01_Recuperacion() {
 
-        Contribuyente pf, pj;
-        pf = new PersonaFisica();
+        Contribuyente pj;
         pj = new PersonaJuridica();
 
 
@@ -97,7 +100,7 @@ public class P01_Contribuyente {
 
         log.info("Probando recuperacion por nif EXISTENTE --------------------------------------------------");
 
-        pj = contribDao.recuperaPorNif(produtorDatos.pj1.getNif());
+        pj = pjDao.recuperaPorNif(produtorDatos.pj1.getNif());
 
         if (pj instanceof PersonaJuridica) {
             // Acceder a los métodos específicos de PersonaJurídica
@@ -110,29 +113,32 @@ public class P01_Contribuyente {
 
         }
 
-        pf = contribDao.recuperaPorNif(produtorDatos.pf1.getNif());
-
-        if (pf instanceof PersonaFisica) {
-            // Acceder a los métodos específicos de PersonaFisica
-            Assert.assertEquals(produtorDatos.pf1.getNif(), pf.getNif());
-            Assert.assertEquals(produtorDatos.pf1.getNombre(), pf.getNombre());
-            Assert.assertEquals(produtorDatos.pf1.getDireccion(), pf.getDireccion());
-            // Acceder a otros métodos específicos de PersonaFisica
-            Assert.assertEquals(produtorDatos.pf1.getFechaNacimiento(), ((PersonaFisica) pf).getFechaNacimiento());
-            Assert.assertEquals(produtorDatos.pf1.getEstadoCivil(), ((PersonaFisica) pf).getEstadoCivil());
-
-        }
-
-
-
         log.info("");
         log.info("Probando recuperacion por nif INEXISTENTE -----------------------------------------------");
 
-        pf = contribDao.recuperaPorNif("iwbvyhuebvuwebvi");
-        Assert.assertNull (pf);
+        pj = pjDao.recuperaPorNif("iwbvyhuebvuwebvi");
+        Assert.assertNull (pj);
 
     }
+    @Test
+    public void test02_Alta() {
 
+        log.info("");
+        log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
+
+        produtorDatos.creaContribuyentesSoltos();
+
+        log.info("");
+        log.info("Inicio do test --------------------------------------------------------------------------------------------------");
+        log.info("Obxectivo: Proba de gravación na BD de nova persoa juridica.\n");
+
+        // Situación de partida:
+        // d1 transitorio
+
+        Assert.assertNull(produtorDatos.pj1.getId());
+        pjDao.almacena(produtorDatos.pj1);
+        Assert.assertNotNull(produtorDatos.pj1.getId());
+    }
 
     @Test
     public void test03_Eliminacion() {
@@ -151,9 +157,39 @@ public class P01_Contribuyente {
         // Situación de partida:
         // c1 desligado
 
-        Assert.assertNotNull(contribDao.recuperaPorNif(produtorDatos.pf1.getNif()));
-        contribDao.elimina(produtorDatos.pf1);
-        Assert.assertNull(contribDao.recuperaPorNif(produtorDatos.pf1.getNif()));
+        Assert.assertNotNull(pjDao.recuperaPorNif(produtorDatos.pj1.getNif()));
+        pjDao.elimina(produtorDatos.pj1);
+        Assert.assertNull(pjDao.recuperaPorNif(produtorDatos.pj1.getNif()));
+    }
+
+    @Test
+    public void test04_Modificacion() {
+
+        PersonaJuridica pj1, pj2;
+
+        log.info("");
+        log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
+
+        produtorDatos.creaContribuyentesSoltos();
+        produtorDatos.gravaContribuyentes();
+
+        log.info("");
+        log.info("Inicio do test --------------------------------------------------------------------------------------------------");
+        log.info("Obxectivo: Proba de modificación da información básica de persona juridica\n");
+
+        // Situación de partida:
+        // pj1 desligado
+
+        String novaRazon = new String ("Nova Razón Social");
+
+        pj1 =(PersonaJuridica) pjDao.recuperaPorNif(produtorDatos.pj1.getNif());
+        Assert.assertNotEquals(novaRazon, pj1.getRazonSocial());
+        pj1.setRazonSocial(novaRazon);
+
+        pjDao.modifica(pj1);
+        pj2 =(PersonaJuridica) pjDao.recuperaPorNif(produtorDatos.pj1.getNif());
+        Assert.assertEquals (novaRazon, pj2.getRazonSocial());
+
     }
     @Test
     public void test05_LAZY() {
@@ -180,7 +216,7 @@ public class P01_Contribuyente {
 
         log.info("Probando (excepcion tras) recuperacion LAZY ---------------------------------------------------------------------");
 
-        c = contribDao.recuperaPorNif(produtorDatos.pf1.getNif());
+        c = pjDao.recuperaPorNif(produtorDatos.pj1.getNif());
         log.info("Acceso a entradas de log de usuario");
         try	{
             Assert.assertEquals(1, c.getDeclaraciones().size());
@@ -195,10 +231,10 @@ public class P01_Contribuyente {
         log.info("");
         log.info("Probando carga forzada de coleccion LAZY ------------------------------------------------------------------------");
 
-        c = contribDao.recuperaPorNif(produtorDatos.pf1.getNif());   // Contribuyente c con proxy sen inicializar
-        c = contribDao.restauraDeclaraciones(c);						// Contribuyente c con proxy xa inicializado
+        c = pjDao.recuperaPorNif(produtorDatos.pj1.getNif());   // Contribuyente c con proxy sen inicializar
+        c = pjDao.restauraDeclaraciones(c);						// Contribuyente c con proxy xa inicializado
 
-        Assert.assertEquals(1, c.getDeclaraciones().size());
+        Assert.assertEquals(2, c.getDeclaraciones().size());
         Assert.assertEquals(produtorDatos.d1, c.getDeclaraciones().iterator().next());
 
 /*
@@ -226,14 +262,14 @@ public class P01_Contribuyente {
         // Situación de partida:
         // u1, e1A, e1B desligados
 
-        Assert.assertNotNull(contribDao.recuperaPorNif(produtorDatos.pf1.getNif()));
-        Assert.assertNotNull(declaracionDao.recuperaPorNumRef(produtorDatos.d1.getNumeroReferencia()));
+        Assert.assertNotNull(pjDao.recuperaPorNif(produtorDatos.pj1.getNif()));
+        Assert.assertNotNull(declDao.recuperaPorNumRef(produtorDatos.d1.getNumeroReferencia()));
 
         // Aqui o remove sobre u1 debe propagarse a e1A e e1B
-        contribDao.elimina(produtorDatos.pf1);
+        pjDao.elimina(produtorDatos.pj1);
 
-        Assert.assertNull(contribDao.recuperaPorNif(produtorDatos.pf1.getNif()));
-        Assert.assertNull(declaracionDao.recuperaPorNumRef(produtorDatos.d1.getNumeroReferencia()));
+        Assert.assertNull(pjDao.recuperaPorNif(produtorDatos.pj1.getNif()));
+        Assert.assertNull(declDao.recuperaPorNumRef(produtorDatos.d1.getNumeroReferencia()));
 
     }
 }

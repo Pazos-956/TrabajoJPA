@@ -25,14 +25,14 @@ public class ProdutorDatosProba {
 	public List<EntradaLog> listaxeE;
 
 
-	public PersonaFisica c1;
-	public PersonaJuridica c2;
+	public PersonaFisica pf1;
+	public PersonaJuridica pj1;
 	public List<Contribuyente> listaxeC;
 
 	public Declaracion d1,d2;
 	public List<Declaracion> listaxeD;
 
-	public Impuesto i1,i2;
+	public Impuesto i1,i2, i3, i4;
 	public Set<Impuesto> listaxeI;
 	
 	
@@ -67,23 +67,23 @@ public class ProdutorDatosProba {
 		// Crea dous contribuyentes EN MEMORIA: c0, c1
 		// SIN declaraciones
 
-		this.c1 = new PersonaFisica();
-		this.c1.setNif("000A");
-		this.c1.setNombre("Contribuyente cero");
-		this.c1.setDireccion("Barcelona 090");
-		this.c1.setFechaNacimiento(LocalDate.of(2003,11,5));
-		this.c1.setEstadoCivil("Soltero");
+		this.pf1 = new PersonaFisica();
+		this.pf1.setNif("000A");
+		this.pf1.setNombre("Contribuyente cero");
+		this.pf1.setDireccion("Barcelona 090");
+		this.pf1.setFechaNacimiento(LocalDate.of(2003,11,5));
+		this.pf1.setEstadoCivil("Soltero");
 
-		this.c2 = new PersonaJuridica();
-		this.c2.setNif("001A");
-		this.c2.setNombre("Contribuyente uno");
-		this.c2.setDireccion("Madrid 111");
-		this.c2.setRazonSocial("Contribuyente uno SL");
-		this.c2.setFechaConstitucion(LocalDate.of(2000,5,15));
+		this.pj1 = new PersonaJuridica();
+		this.pj1.setNif("001A");
+		this.pj1.setNombre("Contribuyente uno");
+		this.pj1.setDireccion("Madrid 111");
+		this.pj1.setRazonSocial("Contribuyente uno SL");
+		this.pj1.setFechaConstitucion(LocalDate.of(2000,5,15));
 
 		this.listaxeC= new ArrayList<Contribuyente> ();
-		this.listaxeC.add(0,c1);
-		this.listaxeC.add(1,c2);
+		this.listaxeC.add(0, pf1);
+		this.listaxeC.add(1, pj1);
 
 	}
 
@@ -135,10 +135,9 @@ public class ProdutorDatosProba {
 	public void crearContribuyentesconDeclaraciones(){
 		this.creaContribuyentesSoltos();
 		this.crearDeclaracionesSoltos();
-		System.out.println(this.d1);
 
-		this.c1.addDeclaracion(this.d1);
-		this.c2.addDeclaracion(this.d2);
+		this.pj1.addDeclaracion(this.d1);
+		this.pj1.addDeclaracion(this.d2);
 
 	}
 
@@ -187,9 +186,21 @@ public class ProdutorDatosProba {
 		this.i2.setDescripcion("Tú tampoco te libras");
 		this.i2.setTipo(TipoImpuesto.IRPF);
 
+		this.i3=new Impuesto();
+		this.i3.setCodigo(3L);
+		this.i3.setDescripcion("Tú menos");
+		this.i3.setTipo(TipoImpuesto.IVA);
+
+		this.i4=new Impuesto();
+		this.i4.setCodigo(4L);
+		this.i4.setDescripcion("Tú al final");
+		this.i4.setTipo(TipoImpuesto.IVA);
+
 		this.listaxeI = new HashSet<Impuesto>();
 		this.listaxeI.add(this.i1);
 		this.listaxeI.add(this.i2);
+		this.listaxeI.add(this.i3);
+		this.listaxeI.add(this.i4);
 
 	}
 

@@ -2,6 +2,7 @@ package gei.id.tutelado.dao;
 
 import gei.id.tutelado.configuracion.Configuracion;
 import gei.id.tutelado.model.Contribuyente;
+import gei.id.tutelado.model.Declaracion;
 import gei.id.tutelado.model.Usuario;
 
 
@@ -20,4 +21,6 @@ public interface ContribuyenteDao {
 
     // CONSULTAS JPQL
     /* MO4.6.a */ //List<EntradaLog> recuperaTodasUsuario(Usuario u);
+    public List<Declaracion> recuperaDeclaracionesContribuyente(Contribuyente contribuyente);
+    public List<Contribuyente> contribuyentesPorEstadoCivil(String estadoCivil);
 }

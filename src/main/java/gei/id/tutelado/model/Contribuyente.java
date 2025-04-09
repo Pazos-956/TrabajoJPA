@@ -31,7 +31,7 @@ public abstract class Contribuyente {
     @OneToMany (mappedBy="contribuyente",fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     private Set<Declaracion> declaraciones = new HashSet<>();
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -121,7 +121,7 @@ public abstract class Contribuyente {
 
     @Override
     public String toString() {
-        return "Contribuyente [id=" + id + ", nif=" + nif + ", nombre=" + nombre + ", direccion=" + direccion +", declaraciones=" + declaraciones + "]";
+        return "Contribuyente [id=" + id + ", nif=" + nif + ", nombre=" + nombre + ", direccion=" + direccion +", declaraciones]";
     }
 
 }

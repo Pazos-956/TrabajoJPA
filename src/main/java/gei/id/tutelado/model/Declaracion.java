@@ -2,6 +2,7 @@ package gei.id.tutelado.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ public class Declaracion {
     @JoinTable(name="t_declaracion_impuesto",
             joinColumns=@JoinColumn(name="id_declaracion"),
             inverseJoinColumns=@JoinColumn(name="id_impuesto"))
-    private Set<Impuesto> impuesto;
+    private Set<Impuesto> impuesto = new HashSet<Impuesto>();
 
     public Long getId() {
         return id;
@@ -109,7 +110,7 @@ public class Declaracion {
 
     @Override
     public String toString() {
-        return "Contribuyente [id=" + id + ", numeroReferencia=" + numeroReferencia + ", fechaPresentacion=" + fechaPresentacion + ", importe=" + importe +", contribuyente=" + contribuyente+", importes=" + importe + "]";
+        return "Contribuyente [id=" + id + ", numeroReferencia=" + numeroReferencia + ", fechaPresentacion=" + fechaPresentacion + ", importe=" + importe +", contribuyente]";
     }
 
 

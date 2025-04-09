@@ -116,6 +116,26 @@ public class P03_Impuesto {
     }
 
     @Test
+    public void test02_Alta() {
+
+        log.info("");
+        log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
+
+        produtorDatos.crearImpuestosSueltos();
+
+        log.info("");
+        log.info("Inicio do test --------------------------------------------------------------------------------------------------");
+        log.info("Obxectivo: Proba de gravación na BD de novo impuesto.\n");
+
+        // Situación de partida:
+        // i1 transitorio
+
+        Assert.assertNull(produtorDatos.i1.getId());
+        impuestoDao.almacena(produtorDatos.i1);
+        Assert.assertNotNull(produtorDatos.i1.getId());
+    }
+
+    @Test
     public void test03_Eliminacion() {
 
         log.info("");
@@ -135,5 +155,35 @@ public class P03_Impuesto {
         Assert.assertNotNull(impuestoDao.recuperaPorCodigo(produtorDatos.i1.getCodigo()));
         impuestoDao.elimina(produtorDatos.i1);
         Assert.assertNull(impuestoDao.recuperaPorCodigo(produtorDatos.i1.getCodigo()));
+    }
+    @Test
+    public void test04_Modificacion() {
+
+        Impuesto i1, i2;
+        String novaDesc;
+
+        log.info("");
+        log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
+
+        produtorDatos.crearImpuestosSueltos();
+        produtorDatos.gravaImpuestos();
+
+        log.info("");
+        log.info("Inicio do test --------------------------------------------------------------------------------------------------");
+        log.info("Obxectivo: Proba de modificación da información básica dun impuesto\n");
+
+        // Situación de partida:
+        // i1 desligado
+
+        novaDesc = new String("Descripcion actualizada");
+
+        i1 = impuestoDao.recuperaPorCodigo(produtorDatos.i1.getCodigo());
+        Assert.assertNotEquals(novaDesc, i1.getDescripcion());
+        i1.setDescripcion(novaDesc);
+
+        impuestoDao.modifica(i1);
+
+        i2 = impuestoDao.recuperaPorCodigo(produtorDatos.i1.getCodigo());
+        Assert.assertEquals(novaDesc, i2.getDescripcion());
     }
 }

@@ -147,7 +147,7 @@ public class ContribuyenteDaoJPA implements ContribuyenteDao{
         return (contribuyente);
 
     }
-
+    @Override
     public List<Declaracion> recuperaDeclaracionesContribuyente(Contribuyente contribuyente) {
         List<Declaracion> declaraciones=new ArrayList<>();
 
@@ -155,7 +155,7 @@ public class ContribuyenteDaoJPA implements ContribuyenteDao{
             em = emf.createEntityManager();
             em.getTransaction().begin();
 
-            declaraciones = em.createQuery("SELECT d FROM Contribuyente c JOIN c.declaraciones d WHERE c = :c", Declaracion.class)
+            declaraciones = em.createQuery("SELECT d FROM Contribuyente c JOIN c.declaraciones d WHERE c = :c ORDER BY d.id DESC", Declaracion.class)
                     .setParameter("c", contribuyente)
                     .getResultList();
 
@@ -173,6 +173,7 @@ public class ContribuyenteDaoJPA implements ContribuyenteDao{
 
         return (declaraciones);
     }
+    @Override
     public List<Contribuyente> contribuyentesPorEstadoCivil(String estadoCivil) {
         List<Contribuyente> contribuyentes=new ArrayList<>();
 
