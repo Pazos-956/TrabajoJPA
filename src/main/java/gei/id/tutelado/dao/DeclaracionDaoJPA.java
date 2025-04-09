@@ -111,7 +111,7 @@ public class DeclaracionDaoJPA implements DeclaracionDao {
         }
         return (declaracion);
     }
-
+    @Override
     public List<Declaracion> recuperaDeclaracionesNulas() {
         List<Declaracion> declaraciones=new ArrayList<>();
 
@@ -119,7 +119,7 @@ public class DeclaracionDaoJPA implements DeclaracionDao {
             em = emf.createEntityManager();
             em.getTransaction().begin();
 
-            declaraciones = em.createQuery("SELECT d FROM Declaracion d LEFT JOIN d.impuesto imp WHERE imp IS NULL", Declaracion.class)
+            declaraciones = em.createQuery("SELECT d FROM Declaracion d LEFT JOIN FETCH d.impuesto i WHERE i IS NULL", Declaracion.class)
                     .getResultList();
 
             em.getTransaction().commit();

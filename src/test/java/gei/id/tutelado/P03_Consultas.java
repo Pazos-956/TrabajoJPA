@@ -2,12 +2,8 @@ package gei.id.tutelado;
 
 import gei.id.tutelado.configuracion.Configuracion;
 import gei.id.tutelado.configuracion.ConfiguracionJPA;
-import gei.id.tutelado.dao.EntradaLogDao;
-import gei.id.tutelado.dao.EntradaLogDaoJPA;
-import gei.id.tutelado.dao.UsuarioDao;
-import gei.id.tutelado.dao.UsuarioDaoJPA;
-import gei.id.tutelado.model.EntradaLog;
-import gei.id.tutelado.model.Usuario;
+import gei.id.tutelado.dao.*;
+import gei.id.tutelado.model.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,6 +19,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 import java.lang.Exception;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -36,8 +33,9 @@ public class P03_Consultas {
     private static ProdutorDatosProba produtorDatos = new ProdutorDatosProba();
     
     private static Configuracion cfg;
-    private static UsuarioDao usuDao;
-    private static EntradaLogDao logDao;
+    private static ContribuyenteDao contrDao;
+    private static DeclaracionDao declDao;
+	private static ImpuestoDao impDao;
     
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -61,10 +59,12 @@ public class P03_Consultas {
     	cfg = new ConfiguracionJPA();
     	cfg.start();
 
-    	usuDao = new UsuarioDaoJPA();
-    	logDao = new EntradaLogDaoJPA();
-    	usuDao.setup(cfg);
-    	logDao.setup(cfg);
+    	declDao = new DeclaracionDaoJPA();
+    	impDao = new ImpuestoDaoJPA();
+		contrDao = new ContribuyenteDaoJPA();
+    	declDao.setup(cfg);
+    	impDao.setup(cfg);
+		contrDao.setup(cfg);
     	
     	produtorDatos = new ProdutorDatosProba();
     	produtorDatos.Setup(cfg);
@@ -88,33 +88,113 @@ public class P03_Consultas {
 	}	
 
 
+	@Test
+	public void test08_INNER_JOIN() {
 
-    @Test 
-    public void test08_INNER_JOIN() {
+		List<Declaracion> listaC;
 
-    	List<EntradaLog> listaE;
-    	
-    	log.info("");	
+		log.info("");
 		log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
 
-		produtorDatos.creaUsuariosConEntradasLog();
-    	produtorDatos.gravaUsuarios();
+		produtorDatos.crearDeclaracionesConContribuyente();
+		produtorDatos.gravaContribuyentes();
 
-    	log.info("");	
+		log.info("");
 		log.info("Inicio do test --------------------------------------------------------------------------------------------------");
-    	log.info("Obxectivo: Proba da consulta EntradaLog.recuperaTodasUsuario\n");   
+		log.info("Obxectivo: Proba da consulta recuperaDeclaracionesContribuyente\n");
 
-    	// Situación de partida:
-    	// u1, e1A, e1B desligados
 
-		listaE = logDao.recuperaTodasUsuario(produtorDatos.u0);
-		Assert.assertEquals(0, listaE.size());
-		
-		listaE = logDao.recuperaTodasUsuario(produtorDatos.u1);
-		Assert.assertEquals(2, listaE.size());
-		Assert.assertEquals(produtorDatos.e1A, listaE.get(0));
-		Assert.assertEquals(produtorDatos.e1B, listaE.get(1));
+		listaC = contrDao.recuperaDeclaracionesContribuyente(produtorDatos.pj1);
+		Assert.assertEquals(0, listaC.size());
 
-    }
+		listaC = contrDao.recuperaDeclaracionesContribuyente(produtorDatos.pf1);
+		Assert.assertEquals(2, listaC.size());
+		Assert.assertEquals(produtorDatos.d1, listaC.get(0));
+		Assert.assertEquals(produtorDatos.d2, listaC.get(1));
+
+	}
+	@Test
+	public void test08_OUTER_JOIN() {
+
+		List<Declaracion> listaC;
+
+		log.info("");
+		log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
+
+		produtorDatos.crearDeclaracionesImpuestos();
+		produtorDatos.gravaImpuestos();
+		produtorDatos.gravaContribuyentes();
+
+
+
+		log.info("");
+		log.info("Inicio do test --------------------------------------------------------------------------------------------------");
+		log.info("Obxectivo: Proba da consulta \n");
+
+
+		listaC = declDao.recuperaDeclaracionesNulas();
+		Assert.assertEquals(1, listaC.size());
+		Assert.assertEquals(produtorDatos.d2, listaC.get(0));
+		Assert.assertEquals(0,listaC.get(0).getImpuesto().size());
+
+	}
+	@Test
+	public void test08_Subclase() {
+
+		List<Contribuyente> listaC;
+
+		log.info("");
+		log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
+
+		produtorDatos.crearDeclaracionesConContribuyente();
+		produtorDatos.gravaContribuyentes();
+
+		log.info("");
+		log.info("Inicio do test --------------------------------------------------------------------------------------------------");
+		log.info("Obxectivo: Proba da consulta contribuyentesPorEstadoCivil\n");
+
+		// Situación de partida:
+		// c1, d1, d2 desligados
+
+		listaC = contrDao.contribuyentesPorEstadoCivil("Soltero");
+		Assert.assertEquals(1, listaC.size());
+
+		Assert.assertEquals(produtorDatos.pf1, listaC.get(0));
+		Assert.assertNotEquals(produtorDatos.pf2, listaC.get(0));
+
+	}
+
+	@Test
+	public void test08_Agregacion() {
+
+		List<Object> listaC;
+
+		log.info("");
+		log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
+
+		produtorDatos.crearImpuestos();
+		produtorDatos.gravaImpuestos();
+
+		log.info("");
+		log.info("Inicio do test --------------------------------------------------------------------------------------------------");
+		log.info("Obxectivo: Proba da consulta cantidadPorTipoImpuesto\n");
+
+
+		listaC = impDao.cantidadPorTipoImpuesto();
+		Assert.assertEquals(3, listaC.size());
+
+		Iterator<Object> i = listaC.iterator();
+		while (i.hasNext()) {
+			Object[] valores = (Object[]) i.next();
+			if (valores[0].equals(TipoImpuesto.IBI)) {
+				Assert.assertEquals(1L, valores[1]);
+			} else if (valores[0].equals(TipoImpuesto.IRPF)) {
+				Assert.assertEquals(1L, valores[1]);
+			} else if (valores[0].equals(TipoImpuesto.IVA)) {
+				Assert.assertEquals(2L, valores[1]);
+			}
+		}
+	}
+
 
 }

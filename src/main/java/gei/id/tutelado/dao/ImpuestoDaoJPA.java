@@ -1,8 +1,6 @@
 package gei.id.tutelado.dao;
 
 import gei.id.tutelado.configuracion.Configuracion;
-import gei.id.tutelado.model.Contribuyente;
-import gei.id.tutelado.model.Declaracion;
 import gei.id.tutelado.model.Impuesto;
 
 import javax.persistence.EntityManager;
@@ -112,14 +110,15 @@ public class ImpuestoDaoJPA implements ImpuestoDao {
         }
         return (impuesto);
     }
-    public List<Impuesto> cantidadPorTipoImpuesto() {
-        List<Impuesto> impuestos = new ArrayList<>();
+    @Override
+    public List<Object> cantidadPorTipoImpuesto() {
+        List<Object> impuestos = new ArrayList<>();
 
         try {
             em = emf.createEntityManager();
             em.getTransaction().begin();
 
-            impuestos = em.createQuery("SELECT COUNT(*) AS Cantidad FROM Impuesto i GROUP BY i.tipoImpuesto", Impuesto.class)
+            impuestos = em.createQuery("SELECT i.tipoImpuesto, COUNT(*) AS Cantidad FROM Impuesto i GROUP BY i.tipoImpuesto")
                     .getResultList();
 
             em.getTransaction().commit();

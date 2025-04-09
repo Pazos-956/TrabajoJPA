@@ -71,7 +71,7 @@ public class P01_Usuarios {
 	public void setUp() throws Exception {		
 		log.info("");	
 		log.info("Limpando BD --------------------------------------------------------------------------------------------");
-		produtorDatos.limpaBD();
+		produtorDatos.limpaBD_2();
 	}
 
 	@After

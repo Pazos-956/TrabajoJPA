@@ -81,7 +81,7 @@ public class P02_Usuarios_Entradas {
 	public void setUp() throws Exception {		
 		log.info("");	
 		log.info("Limpando BD -----------------------------------------------------------------------------------------------------");
-		produtorDatos.limpaBD();
+		produtorDatos.limpaBD_2();
 	}
 
 	@After
