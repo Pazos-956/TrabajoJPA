@@ -1,6 +1,7 @@
 package gei.id.tutelado.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @TableGenerator(name="xeradorIdsContribuyente", table="taboa_ids",
@@ -27,8 +28,8 @@ public abstract class Contribuyente {
     private String nombre;
     @Column(unique = false, nullable = false)
     private String direccion;
-    @OneToMany (mappedBy="contribuyente",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private Set<Declaracion> declaraciones;
+    @OneToMany (mappedBy="contribuyente",fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+    private Set<Declaracion> declaraciones = new HashSet<>();
 
     public long getId() {
         return id;
@@ -74,11 +75,13 @@ public abstract class Contribuyente {
         if (declaracion == null){
             throw new RuntimeException("Error intentando añadir un contribuyente nulo");
         }
+
         if (declaracion.getContribuyente() != null) {
             declaracion.getContribuyente().getDeclaraciones().remove(declaracion);
         }
-        this.declaraciones.add(declaracion);
         declaracion.setContribuyente(this);
+        this.declaraciones.add(declaracion);
+
     }
     public void removeDeclaracion(Declaracion declaracion, Contribuyente contribuyente) {
         if (declaracion == null){
