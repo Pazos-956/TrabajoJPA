@@ -23,6 +23,6 @@ public interface ContribuyenteDao {
     /* MO4.6.a */ //List<EntradaLog> recuperaTodasUsuario(Usuario u);
     public List<Declaracion> recuperaDeclaracionesContribuyente(Contribuyente contribuyente);
     public List<Contribuyente> contribuyentesPorEstadoCivil(String estadoCivil);
-    public List<PersonaFisica> obtenerTodasPersonasFisicas();
+    public List<Object> obtenerTodasPersonasFisicasYEmpresas();
     public List<Object> numeroDeclaracionesPorContribuyente();
 }

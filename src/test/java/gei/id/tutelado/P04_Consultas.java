@@ -113,7 +113,7 @@ public class P04_Consultas {
 	@Test
 	public void test08_OUTER_JOIN() {
 
-		List<PersonaFisica> listaPF;
+		List<Object> listaPF;
 
 		log.info("");
 		log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
@@ -128,10 +128,18 @@ public class P04_Consultas {
 		log.info("Obxectivo: Proba da consulta \n");
 
 
-		listaPF = contrDao.obtenerTodasPersonasFisicas();
-		Assert.assertEquals(2, listaPF.size());
-		Assert.assertEquals(produtorDatos.pf2, listaPF.get(0));
-		Assert.assertEquals(2,listaPF.get(1).getPersonaJuridicas().size());
+		listaPF = contrDao.obtenerTodasPersonasFisicasYEmpresas();
+		Assert.assertEquals(3, listaPF.size());
+
+		Iterator<Object> i = listaPF.iterator();
+		while (i.hasNext()) {
+			Object[] valores = (Object[]) i.next();
+			if (valores[0].equals("001A")) {
+				Assert.assertEquals("Sin empresa", valores[1]);
+			} else {
+				Assert.assertNotEquals("Sin empresa",valores[1]);
+			}
+		}
 
 	}
 	@Test

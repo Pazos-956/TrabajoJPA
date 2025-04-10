@@ -4,6 +4,7 @@ import gei.id.tutelado.model.Contribuyente;
 import gei.id.tutelado.model.Declaracion;
 import gei.id.tutelado.model.PersonaFisica;
 import org.hibernate.LazyInitializationException;
+import org.hibernate.cfg.annotations.IdBagBinder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -201,14 +202,14 @@ public class ContribuyenteDaoJPA implements ContribuyenteDao{
     }
 
     @Override
-    public List<PersonaFisica> obtenerTodasPersonasFisicas() {
-        List<PersonaFisica> contribuyentes=new ArrayList<>();
+    public List<Object> obtenerTodasPersonasFisicasYEmpresas() {
+        List<Object> contribuyentes=new ArrayList<>();
 
         try {
             em = emf.createEntityManager();
             em.getTransaction().begin();
 
-            contribuyentes = em.createQuery("SELECT DISTINCT pf FROM PersonaFisica pf LEFT JOIN pf.personaJuridicas pj ", PersonaFisica.class).getResultList();
+            contribuyentes = em.createQuery("SELECT pf.nif , COALESCE(pj.razonSocial,'Sin empresa') FROM PersonaFisica pf LEFT JOIN pf.personasJuridicas pj ").getResultList();
 
             em.getTransaction().commit();
             em.close();
@@ -227,8 +228,7 @@ public class ContribuyenteDaoJPA implements ContribuyenteDao{
 
     @Override
     public List<Object> numeroDeclaracionesPorContribuyente() {
-        List<Object> declaraciones=new ArrayList<>();
-
+        List <Object> declaraciones=new ArrayList<>();
         try {
             em = emf.createEntityManager();
             em.getTransaction().begin();

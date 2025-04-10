@@ -19,7 +19,7 @@ public class PersonaFisica extends Contribuyente {
     @JoinTable(name="t_pf_pj",
             joinColumns=@JoinColumn(name="id_pf"),
             inverseJoinColumns=@JoinColumn(name="id_pj"))
-    private Set<PersonaJuridica> personaJuridicas = new HashSet<PersonaJuridica>();
+    private Set<PersonaJuridica> personasJuridicas = new HashSet<PersonaJuridica>();
 
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
@@ -38,11 +38,11 @@ public class PersonaFisica extends Contribuyente {
     }
 
     public Set<PersonaJuridica> getPersonaJuridicas() {
-        return personaJuridicas;
+        return personasJuridicas;
     }
 
     public void setPersonaJuridicas(Set<PersonaJuridica> personaJuridicas) {
-        this.personaJuridicas = personaJuridicas;
+        this.personasJuridicas = personaJuridicas;
     }
 
 
