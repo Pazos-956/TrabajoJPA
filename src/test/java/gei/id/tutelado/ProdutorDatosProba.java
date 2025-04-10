@@ -126,11 +126,13 @@ public class ProdutorDatosProba {
 		this.d1.setNumeroReferencia(1L);
 		this.d1.setFechaPresentacion(LocalDate.of(2025,1,10));
 		this.d1.setImporte(105.55f);
+		this.d1.setOrigenesIngresos(Set.of("Inversiones, Alquileres, Ventas"));
 
 		this.d2 = new Declaracion();
 		this.d2.setNumeroReferencia(2L);
 		this.d2.setFechaPresentacion(LocalDate.of(2025,1,10));
 		this.d2.setImporte(200.55f);
+		this.d2.setOrigenesIngresos(Set.of("Chanchullos, Chambas, Trapicheos"));
 
 
 	}

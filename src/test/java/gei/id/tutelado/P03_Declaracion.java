@@ -95,14 +95,13 @@ public class P03_Declaracion {
         Assert.assertEquals(d.getNumeroReferencia(), produtorDatos.d1.getNumeroReferencia());
         Assert.assertEquals(d.getFechaPresentacion(), produtorDatos.d1.getFechaPresentacion());
         Assert.assertEquals(d.getContribuyente(), produtorDatos.d1.getContribuyente());
+        Assert.assertEquals(d.getOrigenesIngresos(), produtorDatos.d1.getOrigenesIngresos());
 
         d = declaracionDao.recuperaPorNumRef(produtorDatos.d2.getNumeroReferencia());
         Assert.assertEquals(d.getNumeroReferencia(), produtorDatos.d2.getNumeroReferencia());
         Assert.assertEquals(d.getFechaPresentacion(), produtorDatos.d2.getFechaPresentacion());
         Assert.assertEquals(d.getContribuyente(), produtorDatos.d2.getContribuyente());
-
-
-
+        Assert.assertEquals(d.getOrigenesIngresos(), produtorDatos.d2.getOrigenesIngresos());
 
 
         log.info("");

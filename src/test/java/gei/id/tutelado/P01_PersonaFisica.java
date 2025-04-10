@@ -129,8 +129,6 @@ public class P01_PersonaFisica {
             Assert.assertEquals(0, ((PersonaFisica) pf).getPersonaJuridicas().size());
 
 
-
-
         }
 
 
@@ -155,8 +153,6 @@ public class P01_PersonaFisica {
         log.info("Inicio do test --------------------------------------------------------------------------------------------------");
         log.info("Obxectivo: Proba de gravación na BD de nova persoa física.\n");
 
-        // Situación de partida:
-        // pf1 transitorio
 
 
         Assert.assertNull(produtorDatos.pf1.getId());
@@ -177,8 +173,7 @@ public class P01_PersonaFisica {
         log.info("Inicio do test --------------------------------------------------------------------------------------------------");
         log.info("Obxectivo: Proba de eliminación da BD de contribuyente sen entradas asociadas\n");
 
-        // Situación de partida:
-        // c1 desligado
+
 
         Assert.assertNotNull(pfDao.recuperaPorNif(produtorDatos.pf1.getNif()));
         pfDao.elimina(produtorDatos.pf1);
@@ -200,8 +195,7 @@ public class P01_PersonaFisica {
         log.info("Inicio do test --------------------------------------------------------------------------------------------------");
         log.info("Obxectivo: Proba de modificación da información básica de persona fisica\n");
 
-        // Situación de partida:
-        // i1 desligado
+
 
         String novoEC = new String ("Casado");
 
@@ -233,8 +227,7 @@ public class P01_PersonaFisica {
                 + "\t\t\t\t b) Carga forzada de colección LAZY da dita coleccion\n"
                 + "\t\t\t\t c) Recuperacion de entrada de log solta con referencia (EAGER) a usuario\n");
 
-        // Situación de partida:
-        // u1, e1A, e1B desligados
+
 
         log.info("Probando (excepcion tras) recuperacion LAZY ---------------------------------------------------------------------");
 
@@ -259,13 +252,6 @@ public class P01_PersonaFisica {
         Assert.assertEquals(2, c.getDeclaraciones().size());
         Assert.assertEquals(produtorDatos.d1, c.getDeclaraciones().iterator().next());
 
-/*
-		log.info("");
-		log.info("Probando acceso a referencia EAGER ------------------------------------------------------------------------------");
-
-		e = logDao.recuperaPorCodigo(produtorDatos.e1A.getCodigo());
-		Assert.assertEquals(produtorDatos.u1, e.getUsuario());
-*/
     }
 
     @Test
@@ -281,13 +267,11 @@ public class P01_PersonaFisica {
         log.info("Inicio do test --------------------------------------------------------------------------------------------------");
         log.info("Obxectivo: Proba de eliminación de de usuario con entradas de log asociadas\n");
 
-        // Situación de partida:
-        // u1, e1A, e1B desligados
+
 
         Assert.assertNotNull(pfDao.recuperaPorNif(produtorDatos.pf2.getNif()));
         Assert.assertNotNull(declDao.recuperaPorNumRef(produtorDatos.d1.getNumeroReferencia()));
 
-        // Aqui o remove sobre u1 debe propagarse a e1A e e1B
         pfDao.elimina(produtorDatos.pf2);
 
         Assert.assertNull(pfDao.recuperaPorNif(produtorDatos.pf2.getNif()));

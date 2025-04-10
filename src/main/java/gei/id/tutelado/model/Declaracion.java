@@ -2,6 +2,7 @@ package gei.id.tutelado.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,12 +21,21 @@ public class Declaracion {
     @Id
     @GeneratedValue(generator="xeradorIdsDeclaracion")
     private Long id;
+
     @Column(unique = true, nullable = false)
     private Long numeroReferencia;
+
     @Column(unique = false, nullable = false)
     private LocalDate fechaPresentacion;
+
     @Column(unique = false, nullable = false)
     private float importe;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "t_origenes_ingresos",joinColumns = @JoinColumn(name="id_origen"))
+    @Column(name = "origenIngreso", nullable = false)
+    private Set<String> origenesIngresos = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="contribuyente_declaracion", nullable=true, unique=false)
     private Contribuyente contribuyente;
@@ -70,6 +80,15 @@ public class Declaracion {
     public void setContribuyente(Contribuyente contribuyente) {
         this.contribuyente = contribuyente;
     }
+
+    public Set<String> getOrigenesIngresos() {
+        return origenesIngresos;
+    }
+
+    public void setOrigenesIngresos(Set<String> origenesIngresos) {
+        this.origenesIngresos = origenesIngresos;
+    }
+
 
 
 
