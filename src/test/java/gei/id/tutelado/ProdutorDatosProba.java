@@ -167,9 +167,6 @@ public class ProdutorDatosProba {
 			Iterator <EntradaLog> itL = em.createQuery("SELECT e from EntradaLog e", EntradaLog.class).getResultList().iterator();
 			while (itL.hasNext()) em.remove(itL.next());		
 			*/
-			
-			em.createNativeQuery("UPDATE taboa_ids SET ultimo_valor_id=0 WHERE nome_id='idUsuario'" ).executeUpdate();
-			em.createNativeQuery("UPDATE taboa_ids SET ultimo_valor_id=0 WHERE nome_id='idEntradaLog'" ).executeUpdate();
 
 			em.getTransaction().commit();
 			em.close();

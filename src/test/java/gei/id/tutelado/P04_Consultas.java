@@ -125,7 +125,7 @@ public class P04_Consultas {
 
 		log.info("");
 		log.info("Inicio do test --------------------------------------------------------------------------------------------------");
-		log.info("Obxectivo: Proba da consulta \n");
+		log.info("Obxectivo: Proba da consulta obtenerTodasPersonasFisicasYEmpresas \n");
 
 
 		listaPF = contrDao.obtenerTodasPersonasFisicasYEmpresas();
@@ -181,7 +181,7 @@ public class P04_Consultas {
 
 		log.info("");
 		log.info("Inicio do test --------------------------------------------------------------------------------------------------");
-		log.info("Obxectivo: Proba da consulta cantidadPorTipoImpuesto\n");
+		log.info("Obxectivo: Proba da consulta numeroDeclaracionesPorContribuyente\n");
 
 
 		listaD = contrDao.numeroDeclaracionesPorContribuyente();
