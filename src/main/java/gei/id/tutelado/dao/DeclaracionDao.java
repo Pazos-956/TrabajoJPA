@@ -14,5 +14,4 @@ public interface DeclaracionDao {
     /* MO4.2 */ Declaracion almacena (Declaracion declaracion);
     /* MO4.3 */ void elimina (Declaracion declaracion);
     /* MO4.4 */ Declaracion modifica (Declaracion declaracion);
-    public List<Declaracion> recuperaDeclaracionesNulas();
 }

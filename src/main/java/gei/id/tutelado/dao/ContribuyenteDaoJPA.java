@@ -2,7 +2,7 @@ package gei.id.tutelado.dao;
 import gei.id.tutelado.configuracion.Configuracion;
 import gei.id.tutelado.model.Contribuyente;
 import gei.id.tutelado.model.Declaracion;
-import gei.id.tutelado.model.Usuario;
+import gei.id.tutelado.model.PersonaFisica;
 import org.hibernate.LazyInitializationException;
 
 import javax.persistence.EntityManager;
@@ -198,6 +198,56 @@ public class ContribuyenteDaoJPA implements ContribuyenteDao{
         }
 
         return (contribuyentes);
+    }
+
+    @Override
+    public List<PersonaFisica> obtenerTodasPersonasFisicas() {
+        List<PersonaFisica> contribuyentes=new ArrayList<>();
+
+        try {
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+
+            contribuyentes = em.createQuery("SELECT DISTINCT pf FROM PersonaFisica pf LEFT JOIN pf.personaJuridicas pj ", PersonaFisica.class).getResultList();
+
+            em.getTransaction().commit();
+            em.close();
+
+        }
+        catch (Exception ex ) {
+            if (em!=null && em.isOpen()) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                em.close();
+                throw(ex);
+            }
+        }
+
+        return (contribuyentes);
+    }
+
+    @Override
+    public List<Object> numeroDeclaracionesPorContribuyente() {
+        List<Object> declaraciones=new ArrayList<>();
+
+        try {
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+
+            declaraciones = em.createQuery("SELECT c.nif, COUNT(*) AS Cantidad FROM Contribuyente c JOIN c.declaraciones d GROUP BY c.nif").getResultList();
+
+            em.getTransaction().commit();
+            em.close();
+
+        }
+        catch (Exception ex ) {
+            if (em!=null && em.isOpen()) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                em.close();
+                throw(ex);
+            }
+        }
+
+        return (declaraciones);
     }
 
 

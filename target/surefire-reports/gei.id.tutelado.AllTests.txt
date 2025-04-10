@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: gei.id.tutelado.AllTests
 -------------------------------------------------------------------------------
-Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.724 s -- in gei.id.tutelado.AllTests
+Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.475 s -- in gei.id.tutelado.AllTests

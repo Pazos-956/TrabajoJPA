@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class P05_Consultas {
+public class P04_Consultas {
 
 	private Logger log = LogManager.getLogger("gei.id.tutelado");
 
@@ -35,7 +35,6 @@ public class P05_Consultas {
 	private static Configuracion cfg;
 	private static ContribuyenteDao contrDao;
 	private static DeclaracionDao declDao;
-	private static ImpuestoDao impDao;
 
 	@Rule
 	public TestRule watcher = new TestWatcher() {
@@ -60,10 +59,8 @@ public class P05_Consultas {
 		cfg.start();
 
 		declDao = new DeclaracionDaoJPA();
-		impDao = new ImpuestoDaoJPA();
 		contrDao = new ContribuyenteDaoJPA();
 		declDao.setup(cfg);
-		impDao.setup(cfg);
 		contrDao.setup(cfg);
 
 		produtorDatos = new ProdutorDatosProba();
@@ -107,7 +104,7 @@ public class P05_Consultas {
 		listaC = contrDao.recuperaDeclaracionesContribuyente(produtorDatos.pf1);
 		Assert.assertEquals(0, listaC.size());
 
-		listaC = contrDao.recuperaDeclaracionesContribuyente(produtorDatos.pj1);
+		listaC = contrDao.recuperaDeclaracionesContribuyente(produtorDatos.pf2);
 		Assert.assertEquals(2, listaC.size());
 		Assert.assertEquals(produtorDatos.d2, listaC.get(0));
 		Assert.assertEquals(produtorDatos.d1, listaC.get(1));
@@ -116,14 +113,12 @@ public class P05_Consultas {
 	@Test
 	public void test08_OUTER_JOIN() {
 
-		List<Declaracion> listaC;
+		List<PersonaFisica> listaPF;
 
 		log.info("");
 		log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
 
 		produtorDatos.crearContribuyentesconDeclaraciones();
-		produtorDatos.crearImpuestosSueltos();
-		produtorDatos.gravaImpuestos();
 		produtorDatos.gravaContribuyentes();
 
 
@@ -133,10 +128,10 @@ public class P05_Consultas {
 		log.info("Obxectivo: Proba da consulta \n");
 
 
-		listaC = declDao.recuperaDeclaracionesNulas();
-		Assert.assertEquals(2, listaC.size());
-		Assert.assertEquals(produtorDatos.d2, listaC.get(0));
-		Assert.assertEquals(0,listaC.get(0).getImpuesto().size());
+		listaPF = contrDao.obtenerTodasPersonasFisicas();
+		Assert.assertEquals(2, listaPF.size());
+		Assert.assertEquals(produtorDatos.pf2, listaPF.get(0));
+		Assert.assertEquals(2,listaPF.get(1).getPersonaJuridicas().size());
 
 	}
 	@Test
@@ -168,31 +163,30 @@ public class P05_Consultas {
 	@Test
 	public void test08_Agregacion() {
 
-		List<Object> listaC;
+		List<Object> listaD;
 
 		log.info("");
 		log.info("Configurando situación de partida do test -----------------------------------------------------------------------");
 
-		produtorDatos.crearImpuestosSueltos();
-		produtorDatos.gravaImpuestos();
+		produtorDatos.crearContribuyentesconDeclaraciones();
+		produtorDatos.gravaContribuyentes();
 
 		log.info("");
 		log.info("Inicio do test --------------------------------------------------------------------------------------------------");
 		log.info("Obxectivo: Proba da consulta cantidadPorTipoImpuesto\n");
 
 
-		listaC = impDao.cantidadPorTipoImpuesto();
-		Assert.assertEquals(3, listaC.size());
+		listaD = contrDao.numeroDeclaracionesPorContribuyente();
+		System.out.println(listaD);
+		Assert.assertEquals(1, listaD.size());
 
-		Iterator<Object> i = listaC.iterator();
+		Iterator<Object> i = listaD.iterator();
 		while (i.hasNext()) {
 			Object[] valores = (Object[]) i.next();
-			if (valores[0].equals(TipoImpuesto.IBI)) {
-				Assert.assertEquals(1L, valores[1]);
-			} else if (valores[0].equals(TipoImpuesto.IRPF)) {
-				Assert.assertEquals(1L, valores[1]);
-			} else if (valores[0].equals(TipoImpuesto.IVA)) {
+			if (valores[0].equals("001A")) {
 				Assert.assertEquals(2L, valores[1]);
+			} else {
+				Assert.assertEquals(0L, valores[1]);
 			}
 		}
 	}

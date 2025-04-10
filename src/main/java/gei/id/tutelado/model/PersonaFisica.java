@@ -2,6 +2,8 @@ package gei.id.tutelado.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @DiscriminatorValue("PF")
@@ -12,6 +14,12 @@ public class PersonaFisica extends Contribuyente {
     private LocalDate fechaNacimiento;
     @Column(unique = false, nullable = true)
     private String estadoCivil;
+
+    @ManyToMany(fetch = FetchType.EAGER,cascade =CascadeType.PERSIST)
+    @JoinTable(name="t_pf_pj",
+            joinColumns=@JoinColumn(name="id_pf"),
+            inverseJoinColumns=@JoinColumn(name="id_pj"))
+    private Set<PersonaJuridica> personaJuridicas = new HashSet<PersonaJuridica>();
 
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
@@ -28,6 +36,16 @@ public class PersonaFisica extends Contribuyente {
     public void setEstadoCivil(String estadoCivil) {
         this.estadoCivil = estadoCivil;
     }
+
+    public Set<PersonaJuridica> getPersonaJuridicas() {
+        return personaJuridicas;
+    }
+
+    public void setPersonaJuridicas(Set<PersonaJuridica> personaJuridicas) {
+        this.personaJuridicas = personaJuridicas;
+    }
+
+
 
 
 

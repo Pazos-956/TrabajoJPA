@@ -17,73 +17,77 @@ public class ProdutorDatosProba {
 	// Crea un conxunto de obxectos para utilizar nos casos de proba
 	
 	private EntityManagerFactory emf=null;
-	
-	public Usuario u0, u1;
-	public List<Usuario> listaxeU;
-	
-	public EntradaLog e1A, e1B;
-	public List<EntradaLog> listaxeE;
 
-
-	public PersonaFisica pf1;
-	public PersonaJuridica pj1;
+	public PersonaFisica pf1,pf2;
+	public PersonaJuridica pj1,pj2,pj3;
 	public List<Contribuyente> listaxeC;
 
 	public Declaracion d1,d2;
 	public List<Declaracion> listaxeD;
 
-	public Impuesto i1,i2, i3, i4;
-	public Set<Impuesto> listaxeI;
+
 	
 	
 	
 	public void Setup (Configuracion config) {
 		this.emf=(EntityManagerFactory) config.get("EMF");
 	}
-	
-	public void creaUsuariosSoltos() {
 
-		// Crea dous usuarios EN MEMORIA: u0, u1
-		// SEN entradas de log
-		
-		this.u0 = new Usuario();
-        this.u0.setNif("000A");
-        this.u0.setNome("Usuario cero");
-        this.u0.setDataAlta(LocalDate.now());
-
-        this.u1 = new Usuario();
-        this.u1.setNif("111B");
-        this.u1.setNome("Usuaria un");
-        this.u1.setDataAlta(LocalDate.now());
-
-        this.listaxeU = new ArrayList<Usuario> ();
-        this.listaxeU.add(0,u0);
-        this.listaxeU.add(1,u1);        
-
-	}
 
 	public void creaContribuyentesSoltos() {
 
-		// Crea dous contribuyentes EN MEMORIA: c0, c1
-		// SIN declaraciones
+		Set <PersonaJuridica> lista_pj = new HashSet<>();
+		// Crear 4 contribuyentes EN MEMORIA: pf1, pf2, pj1, pj2
+		// SIN declaraciones y asinando una persona física como representante de dos personas jurídicas
 
 		this.pf1 = new PersonaFisica();
 		this.pf1.setNif("000A");
-		this.pf1.setNombre("Contribuyente cero");
+		this.pf1.setNombre("Persona física uno");
 		this.pf1.setDireccion("Barcelona 090");
 		this.pf1.setFechaNacimiento(LocalDate.of(2003,11,5));
 		this.pf1.setEstadoCivil("Soltero");
 
 		this.pj1 = new PersonaJuridica();
-		this.pj1.setNif("001A");
-		this.pj1.setNombre("Contribuyente uno");
+		this.pj1.setNif("000B");
+		this.pj1.setNombre("Persona jurídica uno");
 		this.pj1.setDireccion("Madrid 111");
-		this.pj1.setRazonSocial("Contribuyente uno SL");
+		this.pj1.setRazonSocial("PJ uno SL");
 		this.pj1.setFechaConstitucion(LocalDate.of(2000,5,15));
+
+		this.pf2 = new PersonaFisica();
+		this.pf2.setNif("001A");
+		this.pf2.setNombre("Persona física dos");
+		this.pf2.setDireccion("Barcelona 091");
+		this.pf2.setFechaNacimiento(LocalDate.of(2003,10,5));
+		this.pf2.setEstadoCivil("Casado");
+
+		this.pj2 = new PersonaJuridica();
+		this.pj2.setNif("001B");
+		this.pj2.setNombre("Persona jurídica dos");
+		this.pj2.setDireccion("Madrid 112");
+		this.pj2.setRazonSocial("PJ dos SL");
+		this.pj2.setFechaConstitucion(LocalDate.of(2005,5,15));
+
+		this.pj3 = new PersonaJuridica();
+		this.pj3.setNif("002B");
+		this.pj3.setNombre("Persona jurídica tres");
+		this.pj3.setDireccion("Madrid 113");
+		this.pj3.setRazonSocial("PJ tres SL");
+		this.pj3.setFechaConstitucion(LocalDate.of(2009,5,15));
+
+		lista_pj.add(pj1);
+		lista_pj.add(pj2);
+
+		this.pf1.setPersonaJuridicas(lista_pj);
 
 		this.listaxeC= new ArrayList<Contribuyente> ();
 		this.listaxeC.add(0, pf1);
 		this.listaxeC.add(1, pj1);
+		this.listaxeC.add(2, pf2);
+		this.listaxeC.add(3, pj2);
+		this.listaxeC.add(4,pj3);
+
+
 
 	}
 
@@ -136,156 +140,27 @@ public class ProdutorDatosProba {
 		this.creaContribuyentesSoltos();
 		this.crearDeclaracionesSoltos();
 
-		this.pj1.addDeclaracion(this.d1);
-		this.pj1.addDeclaracion(this.d2);
+		this.pf2.addDeclaracion(this.d1);
+		this.pf2.addDeclaracion(this.d2);
 
 	}
 
-	public void asignarImpuestosaDeclaraciones(){
-		this.crearImpuestosSueltos();
 
-		Impuesto primero = this.listaxeI.iterator().next();
-
-		// Crear un set nuevo con solo ese impuesto
-		Set<Impuesto> soloUno = new HashSet<>();
-		soloUno.add(primero);
-
-		this.d1.setImpuesto(soloUno);
-
-	}
 	
-	public void creaEntradasLogSoltas () {
 
-		// Crea duas entradas de log EN MEMORIA: e1a, e1b
-		// Sen usuario asignado (momentaneamente)
-		
-		this.e1A=new EntradaLog();
-        this.e1A.setCodigo("E001");
-        this.e1A.setDescricion ("Modificado contrasinal por defecto");
-        this.e1A.setDataHora(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
-        this.e1B=new EntradaLog();
-        this.e1B.setCodigo("E002");
-        this.e1B.setDescricion ("Acceso a zona reservada");
-        this.e1B.setDataHora(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-
-        this.listaxeE = new ArrayList<EntradaLog> ();
-        this.listaxeE.add(0,this.e1A);
-        this.listaxeE.add(1,this.e1B);        
-
-	}
-
-	public void crearImpuestosSueltos(){
-		this.i1=new Impuesto();
-		this.i1.setCodigo(1L);
-		this.i1.setDescripcion("Te vamos a sacar lo más grande");
-		this.i1.setTipo(TipoImpuesto.IBI);
-
-		this.i2=new Impuesto();
-		this.i2.setCodigo(2L);
-		this.i2.setDescripcion("Tú tampoco te libras");
-		this.i2.setTipo(TipoImpuesto.IRPF);
-
-		this.i3=new Impuesto();
-		this.i3.setCodigo(3L);
-		this.i3.setDescripcion("Tú menos");
-		this.i3.setTipo(TipoImpuesto.IVA);
-
-		this.i4=new Impuesto();
-		this.i4.setCodigo(4L);
-		this.i4.setDescripcion("Tú al final");
-		this.i4.setTipo(TipoImpuesto.IVA);
-
-		this.listaxeI = new HashSet<Impuesto>();
-		this.listaxeI.add(this.i1);
-		this.listaxeI.add(this.i2);
-		this.listaxeI.add(this.i3);
-		this.listaxeI.add(this.i4);
-
-	}
-
-	public void gravaImpuestos() {
-		EntityManager em=null;
-		try {
-			em = emf.createEntityManager();
-			em.getTransaction().begin();
-
-			Iterator<Impuesto> itI = this.listaxeI.iterator();
-			while (itI.hasNext()) {
-				Impuesto i = itI.next();
-				em.persist(i);
-				// DESCOMENTAR SE A PROPAGACION DO PERSIST NON ESTA ACTIVADA
-				/*
-				Iterator<EntradaLog> itEL = u.getEntradasLog().iterator();
-				while (itEL.hasNext()) {
-					em.persist(itEL.next());
-				}
-				*/
-			}
-			em.getTransaction().commit();
-			em.close();
-		} catch (Exception e) {
-			if (em!=null && em.isOpen()) {
-				if (em.getTransaction().isActive()) em.getTransaction().rollback();
-				em.close();
-				throw (e);
-			}
-		}
-	}
 	
-	public void creaUsuariosConEntradasLog () {
 
-		this.creaUsuariosSoltos();
-		this.creaEntradasLogSoltas();
-		
-        this.u1.engadirEntradaLog(this.e1A);
-        this.u1.engadirEntradaLog(this.e1B);
-
-	}
-	
-	public void gravaUsuarios() {
-		EntityManager em=null;
-		try {
-			em = emf.createEntityManager();
-			em.getTransaction().begin();
-
-			Iterator<Usuario> itU = this.listaxeU.iterator();
-			while (itU.hasNext()) {
-				Usuario u = itU.next();
-				em.persist(u);
-				// DESCOMENTAR SE A PROPAGACION DO PERSIST NON ESTA ACTIVADA
-				/*
-				Iterator<EntradaLog> itEL = u.getEntradasLog().iterator();
-				while (itEL.hasNext()) {
-					em.persist(itEL.next());
-				}
-				*/
-			}
-			em.getTransaction().commit();
-			em.close();
-		} catch (Exception e) {
-			if (em!=null && em.isOpen()) {
-				if (em.getTransaction().isActive()) em.getTransaction().rollback();
-				em.close();
-				throw (e);
-			}
-		}	
-	}
-	
 	public void limpaBD () {
 		EntityManager em=null;
 		try {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
 			
-			Iterator <Usuario> itU = em.createQuery("SELECT u from Usuario u", Usuario.class).getResultList().iterator();
 			Iterator <Contribuyente> itC = em.createQuery("SELECT c from Contribuyente c", Contribuyente.class).getResultList().iterator();
-			Iterator <Impuesto> itI = em.createQuery("SELECT i from Impuesto i", Impuesto.class).getResultList().iterator();
 
 
-			while (itU.hasNext()) em.remove(itU.next());
 			while (itC.hasNext()) em.remove(itC.next());
-			while (itI.hasNext()) em.remove(itI.next());
 			/*
 			// Non é necesario porque establecemos  propagacion do remove
 			// Se desactivamos propagación, descomentar

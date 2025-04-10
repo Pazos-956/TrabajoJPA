@@ -14,7 +14,7 @@ import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-public class P02_Declaracion {
+public class P03_Declaracion {
     private Logger log = LogManager.getLogger("gei.id.tutelado");
 
     private static ProdutorDatosProba produtorDatos = new ProdutorDatosProba();
@@ -228,7 +228,7 @@ public class P02_Declaracion {
         d = declaracionDao.recuperaPorNumRef(produtorDatos.d1.getNumeroReferencia());
         log.info("Acceso a contribuyente de una declaración");
         try	{
-            Assert.assertEquals(produtorDatos.pj1, d.getContribuyente());
+            Assert.assertEquals(produtorDatos.pf2, d.getContribuyente());
             excepcion=false;
         } catch (LazyInitializationException ex) {
             excepcion=true;

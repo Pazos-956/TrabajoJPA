@@ -29,11 +29,7 @@ public class Declaracion {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="contribuyente_declaracion", nullable=true, unique=false)
     private Contribuyente contribuyente;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="t_declaracion_impuesto",
-            joinColumns=@JoinColumn(name="id_declaracion"),
-            inverseJoinColumns=@JoinColumn(name="id_impuesto"))
-    private Set<Impuesto> impuesto = new HashSet<Impuesto>();
+
 
     public Long getId() {
         return id;
@@ -75,13 +71,7 @@ public class Declaracion {
         this.contribuyente = contribuyente;
     }
 
-    public Set<Impuesto> getImpuesto() {
-        return impuesto;
-    }
 
-    public void setImpuesto(Set<Impuesto> impuesto) {
-        this.impuesto = impuesto;
-    }
 
 
     @Override
